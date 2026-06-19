@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>for you, always 🌹</title>
+<title>Purple Chasimpha</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Parisienne&family=Jost:wght@300;400;500&display=swap');
 
   :root{
-    --ink:#1c0f15;
-    --wine:#4a1f2c;
-    --wine-light:#6e2f3d;
-    --rose-dust:#c98a93;
-    --blush:#f1d9d2;
+    --ink:#580069;
+    --wine:#a633aa;
+    --wine-light:#7e1b80;
+    --rose-dust:#c98ab3;
+    --blush:#f1e9d2;
     --cream:#f7ecdf;
-    --gold:#cda86a;
-    --gold-soft:#e3c98f;
-    --rose-deep:#9c3147;
+    --gold:#cdb66a;
+    --gold-soft:#f0cc7e;
+    --rose-deep:#ac4497;
   }
 
   *{box-sizing:border-box;}
@@ -26,8 +26,8 @@
     padding:0;
     min-height:100vh;
     background:
-      radial-gradient(circle at 50% 30%, rgba(110,47,61,0.55), transparent 60%),
-      radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.55), transparent 70%),
+      radial-gradient(circle at 50% 30%, rgba(107, 47, 110, 0.55), transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.55), transparent 70%),
       linear-gradient(160deg, var(--wine) 0%, var(--ink) 75%);
     background-attachment:fixed;
     color:var(--cream);
@@ -108,8 +108,8 @@
   .frame{
     position:relative;
     padding:clamp(36px,6vw,64px) clamp(24px,6vw,56px);
-    border:1px solid rgba(205,168,106,0.35);
-    background:linear-gradient(180deg, rgba(28,15,21,0.35), rgba(28,15,21,0.55));
+    border:1px solid rgba(255, 182, 240, 0.35);
+    background:linear-gradient(180deg, rgba(25, 15, 28, 0.35), rgba(28, 15, 28, 0.55));
     backdrop-filter:blur(2px);
     text-align:center;
     animation:breathe 9s ease-in-out infinite;
@@ -211,7 +211,7 @@
     opacity:0;
     max-width:480px;
     transform:translateY(8px);
-    transition:opacity 1.3s ease, transform 1.3s ease;
+    transition:opacity 2.3s ease, transform 2.3s ease;
     position:absolute;
   }
 
@@ -309,31 +309,34 @@
       <span class="corner bl"></span>
       <span class="corner br"></span>
 
-      <p class="eyebrow">a letter for you</p>
+      <p class="eyebrow">a letter for my purple</p>
 
       <div class="rose-emblem" id="roseEmblem" aria-hidden="true"></div>
 
-      <h1>I Miss You</h1>
+      <h1>I Love You</h1>
       <div class="divider"></div>
 
       <div class="message-box" aria-live="polite">
         <p class="message" data-i="0">hey, you&hellip;</p>
-        <p class="message" data-i="1">I've been thinking of you in technicolor.</p>
-        <p class="message" data-i="2">this kind of missing sits in my chest like gold dust.</p>
-        <p class="message" data-i="3">I keep replaying your laugh like my favorite song.</p>
-        <p class="message" data-i="4">with you, even an ordinary night feels like slow dancing under neon light.</p>
-        <p class="message" data-i="5">I love you more than every star caught in a polaroid sky.</p>
+        <p class="message" data-i="1">Thank you for being my friend.</p>
+        <p class="message" data-i="2">And I dont mean it in some cringe coming of age indie movie type of way.</p>
+        <p class="message" data-i="3">I mean thank you for choosing me to be in your life.</p>
+        <p class="message" data-i="4">For allowing me to experience you and all your authenticity.</p>
+        <p class="message" data-i="5">For being there for me when I couldn't be there for myself.</p>
+        <p class="message" data-i="6">For being so true to yourself that I see you in everything purple.</p>
+        <p class="message" data-i="7">For being the reason I look at any shade of purple and think of one the truest forms of love that God graced us with.</p>
+        <p class="message" data-i="8">A love so pure you choose to stay even when the voice inside you says your aren't wanted.</p>
+        <p class="message" data-i="9">So, thank you for being my friend.</p>
       </div>
 
       <div class="dots" id="dots"></div>
 
       <div class="divider"></div>
       <div class="final" id="final">
-        <p>You're my favorite kind of forever.</p>
+        <p>You're my favorite shade of purple.</p>
         <p>I love you,<span class="script">always</span></p>
       </div>
 
-      <p class="hint">touch the screen for falling roses</p>
       <button class="replay" id="replayBtn">▸ play it again</button>
     </div>
   </div>
@@ -385,7 +388,7 @@
     let petalInterval;
     function startPetals(){
       if(reduceMotion) return;
-      petalInterval = setInterval(spawnPetal, 2200);
+      petalInterval = setInterval(spawnPetal, 400);
     }
 
     const messages = Array.from(document.querySelectorAll('.message'));
@@ -405,26 +408,26 @@
     }
 
     function runSequence(){
-      clearSeq();
-      messages.forEach(m=>m.classList.remove('visible'));
+  clearSeq();
+  messages.forEach(m=>m.classList.remove('visible'));
+  dots.forEach(d=>d.classList.remove('active'));
+  finalEl.classList.remove('visible');
+
+  messages.forEach((m,i)=>{
+    const t = setTimeout(()=>{
+      messages.forEach(o=>o.classList.remove('visible'));
       dots.forEach(d=>d.classList.remove('active'));
-      finalEl.classList.remove('visible');
+      m.classList.add('visible');
+      dots[i].classList.add('active');
+    }, 600 + i*3000); 
+    seqTimers.push(t);
+  });
 
-      messages.forEach((m,i)=>{
-        const t = setTimeout(()=>{
-          messages.forEach(o=>o.classList.remove('visible'));
-          dots.forEach(d=>d.classList.remove('active'));
-          m.classList.add('visible');
-          dots[i].classList.add('active');
-        }, 600 + i*2300);
-        seqTimers.push(t);
-      });
-
-      const finalT = setTimeout(()=>{
-        finalEl.classList.add('visible');
-      }, 600 + messages.length*2300);
-      seqTimers.push(finalT);
-    }
+  const finalT = setTimeout(()=>{
+    finalEl.classList.add('visible');
+  }, 600 + messages.length*3000); 
+  seqTimers.push(finalT);
+}
 
     document.addEventListener('click', (e)=>{
       const xv = (e.clientX/window.innerWidth)*100;
