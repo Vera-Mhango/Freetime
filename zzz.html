@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>missing you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-zenith:#080b24;
+    --sky-upper:#10153c;
+    --sky-mid:#1e1f52;
+    --sky-violet:#3a2458;
+    --sky-dusk:#69304f;
+    --sky-horizon:#b15f72;
+    --sky-horizon-edge:#5a2c3a;
+    --sky-base:#15091a;
+    --glow-cool:#2b2766;
+    --glow-gold:rgba(255,179,122,0.35);
+    --glow-rose:rgba(217,122,138,0.42);
+    --accent-pink:#f2b9d6;
+    --accent-gold:#ffe3a3;
+    --text-light:#f6f2ff;
+    --text-soft:rgba(246,242,255,0.66);
+    --line-soft:rgba(246,242,255,0.32);
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    background:var(--sky-zenith);
+    color:var(--text-light);
+    overflow-x:hidden;
+    font-family:'Outfit', sans-serif;
+  }
+
+  .sky{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 120% 70% at 50% 38%, transparent 55%, rgba(0,0,0,0.22) 100%),
+      radial-gradient(ellipse 80% 50% at 50% -10%, var(--glow-cool) 0%, transparent 60%),
+      radial-gradient(ellipse 85% 38% at 50% 100%, var(--glow-gold) 0%, transparent 62%),
+      radial-gradient(ellipse 65% 30% at 50% 90%, var(--glow-rose) 0%, transparent 68%),
+      linear-gradient(180deg,
+        var(--sky-zenith) 0%,
+        var(--sky-upper) 20%,
+        var(--sky-mid) 38%,
+        var(--sky-violet) 55%,
+        var(--sky-dusk) 70%,
+        var(--sky-horizon) 84%,
+        var(--sky-horizon-edge) 93%,
+        var(--sky-base) 100%
+      );
+    z-index:0;
+  }
+
+  .nebula{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:0.26;
+    pointer-events:none;
+  }
+  .nebula--pink{
+    width:42vw; height:42vw;
+    top:-8%; left:-8%;
+    background:var(--accent-pink);
+    animation:drift1 26s ease-in-out infinite alternate;
+  }
+  .nebula--gold{
+    width:36vw; height:36vw;
+    bottom:-14%; right:-8%;
+    background:#f3a487;
+    opacity:0.16;
+    animation:drift2 30s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift1{
+    0%{ transform:translate(0,0); }
+    100%{ transform:translate(6vw, 8vh); }
+  }
+  @keyframes drift2{
+    0%{ transform:translate(0,0); }
+    100%{ transform:translate(-5vw, -6vh); }
+  }
+
+  .star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:#fff;
+    border-radius:50%;
+    animation-name:twinkle;
+    animation-iteration-count:infinite;
+    animation-timing-function:ease-in-out;
+  }
+
+  @keyframes twinkle{
+    0%, 100%{ opacity:var(--base-op, 0.35); transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.6); }
+  }
+
+  .moon{
+    position:absolute;
+    top:5%;
+    right:6%;
+    width:clamp(58px, 11vw, 96px);
+    height:clamp(58px, 11vw, 96px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fffaf0 0%, var(--accent-gold) 45%, #d9b46c 75%, #b8965a 100%);
+    box-shadow:
+      0 0 40px 14px rgba(255,227,163,0.35),
+      0 0 90px 40px rgba(255,227,163,0.14);
+    cursor:pointer;
+    z-index:2;
+  }
+  .moon::before, .moon::after{
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    background:rgba(150,115,60,0.25);
+  }
+  .moon::before{ width:22%; height:22%; top:28%; left:22%; }
+  .moon::after{ width:14%; height:14%; top:55%; left:55%; }
+
+  .constellation{
+    position:absolute;
+    top:7%;
+    left:4%;
+    width:clamp(150px, 28vw, 240px);
+    height:auto;
+    opacity:0.95;
+    z-index:1;
+    pointer-events:none;
+  }
+  .constellation .line{
+    stroke:var(--line-soft);
+    stroke-width:1;
+    fill:none;
+  }
+  .constellation .line--gap{
+    stroke-dasharray:3 5;
+    stroke:rgba(246,242,255,0.18);
+  }
+  .constellation .pt{
+    fill:var(--text-light);
+    animation:pulse 3.4s ease-in-out infinite;
+  }
+  .constellation .pt--missing{
+    fill:transparent;
+    stroke:rgba(246,242,255,0.45);
+    stroke-width:1;
+    animation:none;
+    opacity:0.6;
+  }
+  @keyframes pulse{
+    0%, 100%{ opacity:0.7; r:1.6; }
+    50%{ opacity:1; r:2.4; }
+  }
+
+  .shooting-star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow:0 0 8px 2px rgba(255,255,255,0.9);
+    z-index:3;
+    animation:shoot 1.5s ease-out forwards;
+  }
+  .shooting-star::before{
+    content:'';
+    position:absolute;
+    top:50%;
+    right:0;
+    width:90px;
+    height:1px;
+    background:linear-gradient(to left, rgba(255,255,255,0.85), transparent);
+    transform:translateY(-50%);
+  }
+  @keyframes shoot{
+    0%{ opacity:0; transform:translate(0,0); }
+    8%{ opacity:1; }
+    85%{ opacity:1; }
+    100%{ opacity:0; transform:translate(var(--dx), var(--dy)); }
+  }
+
+  .content{
+    position:relative;
+    z-index:4;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:clamp(150px, 26vh, 210px) 24px 60px;
+    gap:18px;
+  }
+
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--text-soft);
+    font-weight:300;
+    margin:0;
+    text-shadow:0 2px 10px rgba(5,4,15,0.5);
+  }
+
+  h1{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:clamp(28px, 5.2vw, 48px);
+    line-height:1.25;
+    max-width:680px;
+    margin:0;
+    color:var(--text-light);
+    text-shadow:0 2px 14px rgba(5,4,15,0.5);
+  }
+
+  .subtext{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-size:clamp(16px, 2.4vw, 20px);
+    color:var(--text-soft);
+    max-width:480px;
+    margin:0;
+    line-height:1.5;
+    text-shadow:0 2px 10px rgba(5,4,15,0.5);
+  }
+
+  .send-btn{
+    margin-top:14px;
+    padding:14px 30px;
+    border-radius:999px;
+    border:1px solid rgba(246,242,255,0.35);
+    background:rgba(246,242,255,0.08);
+    backdrop-filter:blur(2px);
+    color:var(--text-light);
+    font-family:'Outfit', sans-serif;
+    font-size:15px;
+    font-weight:400;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    transition:background 0.25s ease, transform 0.15s ease, border-color 0.25s ease;
+  }
+  .send-btn:hover{
+    background:rgba(246,242,255,0.16);
+    border-color:rgba(246,242,255,0.55);
+  }
+  .send-btn:active{
+    transform:scale(0.97);
+  }
+  .send-btn:focus-visible{
+    outline:2px solid var(--accent-pink);
+    outline-offset:3px;
+  }
+
+  .message{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-style:italic;
+    font-size:clamp(18px, 2.8vw, 24px);
+    color:var(--accent-pink);
+    max-width:520px;
+    min-height:1.6em;
+    margin:6px 0 0;
+    opacity:0;
+    transform:translateY(6px);
+    text-shadow:0 2px 14px rgba(5,4,15,0.6);
+  }
+  .message.show{
+    animation:fadeUp 0.9s ease forwards;
+  }
+  @keyframes fadeUp{
+    0%{ opacity:0; transform:translateY(6px); }
+    100%{ opacity:1; transform:translateY(0); }
+  }
+
+  .counter{
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:rgba(246,242,255,0.55);
+    margin-top:2px;
+    min-height:1em;
+    text-shadow:0 1px 8px rgba(5,4,15,0.5);
+  }
+
+  .footer-line{
+    margin-top:34px;
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-style:italic;
+    font-size:14px;
+    color:rgba(246,242,255,0.5);
+    text-shadow:0 2px 10px rgba(5,4,15,0.5);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .star, .pt, .nebula{ animation:none !important; }
+    .shooting-star{ animation:fadeOnly 0.6s ease forwards !important; }
+    @keyframes fadeOnly{ from{opacity:0;} to{opacity:1;} }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" id="sky">
+  <div class="nebula nebula--pink"></div>
+  <div class="nebula nebula--gold"></div>
+
+  <svg class="constellation" id="constellation" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <div class="moon" id="moon" title="tap me too"></div>
+</div>
+
+<div class="content">
+  <p class="eyebrow">A message from the night sky</p>
+  <h1>There's a heart up there tonight,<br>missing one star.</h1>
+  <p class="subtext">It's shaped like how I feel when I'm not with you — it won't be whole again until you're home.</p>
+
+  <button class="send-btn" id="sendBtn">A little shooting love</button>
+  <p class="message" id="message"></p>
+  <p class="counter" id="counter"></p>
+
+  <p class="footer-line">Miss you. Love you. Always. 3000.</p>
+</div>
+
+<script>
+  // ---------- background stars ----------
+  const sky = document.getElementById('sky');
+  const STAR_COUNT = window.innerWidth < 600 ? 55 : 90;
+  const STAR_MAX_VH = 72; // keep the lower "horizon glow" band clear of stars
+
+  for (let i = 0; i < STAR_COUNT; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = (Math.random() * 1.6 + 1).toFixed(2);
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.top = (Math.random() * STAR_MAX_VH) + 'vh';
+    s.style.left = (Math.random() * 100) + 'vw';
+    s.style.setProperty('--base-op', (Math.random() * 0.4 + 0.25).toFixed(2));
+    s.style.animationDuration = (Math.random() * 3 + 2).toFixed(2) + 's';
+    s.style.animationDelay = (Math.random() * 4).toFixed(2) + 's';
+    sky.appendChild(s);
+  }
+
+  // ---------- heart constellation, one star missing ----------
+  const svg = document.getElementById('constellation');
+  const NS = 'http://www.w3.org/2000/svg';
+  const POINTS = 12;
+  const MISSING_INDEX = 6; // the star that isn't there
+  const pts = [];
+
+  for (let i = 0; i < POINTS; i++){
+    const t = (i / POINTS) * Math.PI * 2;
+    const hx = 16 * Math.pow(Math.sin(t), 3);
+    const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+    pts.push({
+      x: 110 + hx * 5.2,
+      y: 95 + hy * 5.2
+    });
+  }
+
+  // connecting lines
+  for (let i = 0; i < POINTS; i++){
+    const a = pts[i];
+    const b = pts[(i + 1) % POINTS];
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', a.x);
+    line.setAttribute('y1', a.y);
+    line.setAttribute('x2', b.x);
+    line.setAttribute('y2', b.y);
+    const touchesMissing = (i === MISSING_INDEX || (i + 1) % POINTS === MISSING_INDEX);
+    line.setAttribute('class', touchesMissing ? 'line line--gap' : 'line');
+    svg.appendChild(line);
+  }
+
+  // star points
+  pts.forEach((p, i) => {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', p.x);
+    c.setAttribute('cy', p.y);
+    c.setAttribute('r', i === MISSING_INDEX ? 2.4 : 1.8);
+    c.setAttribute('class', i === MISSING_INDEX ? 'pt pt--missing' : 'pt');
+    if (i !== MISSING_INDEX){
+      c.style.animationDelay = (Math.random() * 3).toFixed(2) + 's';
+    }
+    svg.appendChild(c);
+  });
+
+  // ---------- love notes ----------
+  const NOTES = [
+    "Know you're always on my mind, always thinking of you.",
+    "I miss you most when I'm tired.",
+    "Wherever you are right now — that's my favorite place.",
+    "I keep half of every joke just to tell you later.",
+    "If missing you made a sound, the whole sky would be ringing.",
+    "You're the first thing I want to talk about when something good happens.",
+    "Sending the quiet kind of love — the kind that just waits for you.",
+    "Counting down to when I can see you again.",
+    "I see you in everything you love and everything I want to try.",
+    "I Love You 3000."
+  ];
+
+  let noteIndex = 0;
+  let sentCount = 0;
+  const messageEl = document.getElementById('message');
+  const counterEl = document.getElementById('counter');
+
+  function launchShootingStar(){
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+
+    const fromLeftEdge = Math.random() > 0.5;
+    const startX = fromLeftEdge ? -20 : window.innerWidth + 20;
+    const startY = Math.random() * window.innerHeight * 0.5;
+    const dx = fromLeftEdge ? window.innerWidth * 0.9 : -window.innerWidth * 0.9;
+    const dy = window.innerHeight * (0.25 + Math.random() * 0.3);
+
+    star.style.left = startX + 'px';
+    star.style.top = startY + 'px';
+    star.style.setProperty('--dx', dx + 'px');
+    star.style.setProperty('--dy', dy + 'px');
+    if (fromLeftEdge){
+      star.style.transform = 'scaleX(-1)';
+    }
+
+    sky.appendChild(star);
+    star.addEventListener('animationend', () => star.remove());
+  }
+
+  function sendLove(){
+    launchShootingStar();
+
+    sentCount += 1;
+    const note = NOTES[noteIndex % NOTES.length];
+    noteIndex += 1;
+
+    messageEl.classList.remove('show');
+    // restart animation
+    void messageEl.offsetWidth;
+    messageEl.textContent = '♡ ' + note;
+    messageEl.classList.add('show');
+
+    counterEl.textContent = 'love notes sent tonight: ' + sentCount;
+  }
+
+  document.getElementById('sendBtn').addEventListener('click', sendLove);
+  document.getElementById('moon').addEventListener('click', sendLove);
+</script>
+
+</body>
+</html>

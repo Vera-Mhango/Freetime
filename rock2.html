@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>for enock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night: #1A1410;
+    --night-soft: #241B16;
+    --cream: #F2E4D0;
+    --cream-dim: #C9B79C;
+    --rose: #C97B63;
+    --mauve: #8B6F8E;
+    --gold: #D4AF7A;
+    --script: 'Italianno', 'Brush Script MT', cursive;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', Helvetica, sans-serif;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html, body{
+    height: 100%;
+    background: var(--night);
+    overflow-x: hidden;
+  }
+
+  body{
+    min-height: 100svh;
+    position: relative;
+    font-family: var(--serif);
+    color: var(--cream);
+  }
+
+  /* ---- dreamy sunset sky backdrop ---- */
+  .sky{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 90% 50% at 50% 100%, rgba(201,123,99,0.35), transparent 65%),
+      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(139,111,142,0.3), transparent 60%),
+      linear-gradient(180deg, #211722 0%, #2C1E22 28%, #3A2421 55%, #1A1410 100%);
+  }
+
+  .sky::after{
+    /* soft horizon glow band */
+    content:"";
+    position: absolute;
+    left: 0; right: 0;
+    top: 58%;
+    height: 22%;
+    background: radial-gradient(ellipse 60% 100% at 50% 50%, rgba(212,175,122,0.18), transparent 75%);
+    filter: blur(8px);
+  }
+
+  /* film grain overlay */
+  .grain{
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* vignette */
+  .vignette{
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse 80% 70% at 50% 45%, transparent 50%, rgba(0,0,0,0.55) 100%);
+  }
+
+  /* drifting light motes */
+  .motes{
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mote{
+    position: absolute;
+    bottom: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,175,122,0.9), rgba(212,175,122,0));
+    animation: drift linear infinite;
+  }
+
+  @keyframes drift{
+    0%{ transform: translateY(0) translateX(0); opacity: 0; }
+    10%{ opacity: 0.7; }
+    90%{ opacity: 0.5; }
+    100%{ transform: translateY(-110vh) translateX(var(--drift-x, 20px)); opacity: 0; }
+  }
+
+  /* ---- layout ---- */
+  .scene{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 7vh 1.5rem 5vh;
+    text-align: center;
+  }
+
+  .eyebrow{
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0.75;
+    margin-bottom: 2.25rem;
+  }
+
+  .title{
+    font-family: var(--script);
+    font-size: 4.6rem;
+    line-height: 1;
+    color: var(--cream);
+    text-shadow: 0 0 28px rgba(212,175,122,0.35);
+    margin-bottom: 2.75rem;
+    font-weight: 400;
+  }
+
+  /* ---- polaroid + rock ---- */
+  .polaroid{
+    position: relative;
+    background: #EDE3D3;
+    padding: 14px 14px 46px;
+    border-radius: 2px;
+    box-shadow:
+      0 18px 40px rgba(0,0,0,0.55),
+      0 2px 0 rgba(255,255,255,0.05) inset;
+    transform: rotate(-3deg);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform 0.5s cubic-bezier(.22,1,.36,1);
+  }
+
+  .polaroid-photo{
+    width: 196px;
+    height: 196px;
+    background:
+      radial-gradient(ellipse at 50% 40%, #4A3B2E, #241B16 75%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .polaroid-photo svg{
+    width: 64%;
+    height: 64%;
+    transition: transform 0.45s cubic-bezier(.22,1,.36,1);
+    transform: rotate(-4deg);
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,0.5)) sepia(0.25) saturate(1.1);
+  }
+
+  .polaroid-caption{
+    font-family: var(--script);
+    font-size: 1.5rem;
+    color: #5A4A3A;
+    position: absolute;
+    bottom: 8px;
+    left: 0; right: 0;
+    text-align: center;
+  }
+
+  .polaroid.turn-1{ transform: rotate(2deg); }
+  .polaroid.turn-2{ transform: rotate(-5deg); }
+  .polaroid.turn-3{ transform: rotate(3deg); }
+  .polaroid.turn-4{ transform: rotate(-1deg) scale(1.02); }
+
+  .polaroid:active{ transform: rotate(0deg) scale(0.985); }
+
+  .polaroid.turn-1 .polaroid-photo svg{ transform: rotate(7deg); }
+  .polaroid.turn-2 .polaroid-photo svg{ transform: rotate(-10deg); }
+  .polaroid.turn-3 .polaroid-photo svg{ transform: rotate(5deg); }
+  .polaroid.turn-4 .polaroid-photo svg{ transform: rotate(-3deg) scale(1.05); }
+
+  .tap-hint{
+    margin-top: 1.6rem;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0.6;
+    transition: opacity 0.4s ease;
+  }
+
+  .tap-hint.hidden{ opacity: 0; }
+
+  /* ---- message ---- */
+  .message-box{
+    margin-top: 2.5rem;
+    min-height: 5em;
+    max-width: 380px;
+  }
+
+  .message{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.65;
+    font-weight: 400;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .message.visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .message .accent{
+    color: var(--rose);
+    font-style: normal;
+    font-family: var(--script);
+    font-size: 1.5em;
+  }
+
+  .progress{
+    display: flex;
+    gap: 7px;
+    margin-top: 2.25rem;
+  }
+
+  .dot{
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--cream-dim);
+    opacity: 0.25;
+    transition: opacity 0.3s ease, background 0.3s ease;
+  }
+
+  .dot.done{ opacity: 1; background: var(--gold); }
+
+  /* ---- finale ---- */
+  .finale{
+    margin-top: 2.75rem;
+    width: 100%;
+    max-width: 380px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.9s ease, max-height 0.9s ease;
+  }
+
+  .finale.visible{
+    opacity: 1;
+    max-height: 700px;
+  }
+
+  .divider{
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 1.75rem;
+    opacity: 0.7;
+  }
+
+  .countdown-card{
+    background: rgba(36,27,22,0.55);
+    border: 1px solid rgba(212,175,122,0.18);
+    border-radius: 4px;
+    padding: 1.75rem 1.25rem;
+    backdrop-filter: blur(2px);
+  }
+
+  .countdown-label{
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    margin-bottom: 0.5rem;
+  }
+
+  .countdown-number{
+    font-family: var(--serif);
+    font-size: 3rem;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  .countdown-sub{
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    color: var(--cream-dim);
+    margin-top: 0.85rem;
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  .signature{
+    margin-top: 2.5rem;
+    line-height: 1.5;
+  }
+
+  .signature-line{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--cream);
+  }
+
+  .signature .from{
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--script);
+    font-size: 2.6rem;
+    color: var(--rose);
+    text-shadow: 0 0 20px rgba(201,123,99,0.4);
+  }
+
+  .replay{
+    margin-top: 2.75rem;
+    background: none;
+    border: 1px solid rgba(212,175,122,0.3);
+    color: var(--cream-dim);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+  }
+
+  .replay:hover{
+    border-color: var(--gold);
+    color: var(--cream);
+    background: rgba(212,175,122,0.08);
+  }
+
+  .replay:focus-visible,
+  .polaroid:focus-visible{
+    outline: 1px solid var(--gold);
+    outline-offset: 6px;
+  }
+
+  @media (max-width: 380px){
+    .title{ font-size: 3.6rem; }
+    .message{ font-size: 1.18rem; }
+    .countdown-number{ font-size: 2.4rem; }
+    .signature .from{ font-size: 2.2rem; }
+    .polaroid-photo{ width: 168px; height: 168px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .polaroid, .polaroid-photo svg, .message, .finale{ transition: none; }
+    .mote{ animation: none; display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="sky"></div>
+  <div class="motes" id="motes"></div>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+  <main class="scene">
+    <p class="eyebrow">a small thing &middot; from your girl</p>
+    <h1 class="title">i miss you</h1>
+
+    <div class="polaroid" id="rock" role="button" tabindex="0" aria-label="Tap the photograph to continue">
+      <div class="polaroid-photo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- soft contact shadow -->
+          <ellipse cx="61" cy="96" rx="32" ry="6" fill="#000000" opacity="0.28"/>
+          <!-- rock body: irregular faceted silhouette, not an oval -->
+          <path d="M38 52 L52 32 L74 30 L90 44 L96 62 L88 80 L70 92 L48 90 L34 76 L30 60 Z" fill="#8A7B63"/>
+          <!-- top-lit facet -->
+          <path d="M52 32 L74 30 L90 44 L80 50 L60 42 Z" fill="#C9B894"/>
+          <!-- mid facets for dimension -->
+          <path d="M38 52 L60 42 L80 50 L72 64 L46 64 Z" fill="#AB9A78"/>
+          <path d="M46 64 L72 64 L88 80 L70 92 L52 86 Z" fill="#7A6C54"/>
+          <path d="M34 76 L46 64 L52 86 L48 90 Z" fill="#695C46"/>
+          <!-- crack line for texture -->
+          <path d="M58 44 L54 60 L62 66 L56 84" stroke="#5C4F3C" stroke-width="1" fill="none" opacity="0.5" stroke-linecap="round"/>
+          <!-- mineral fleck highlights -->
+          <ellipse cx="68" cy="40" rx="5" ry="2.4" fill="#EBDFC2" opacity="0.55" transform="rotate(-18 68 40)"/>
+          <ellipse cx="50" cy="56" rx="3" ry="1.6" fill="#EBDFC2" opacity="0.4" transform="rotate(10 50 56)"/>
+          <ellipse cx="78" cy="68" rx="2.6" ry="1.4" fill="#3F362A" opacity="0.5"/>
+        </svg>
+      </div>
+      <p class="polaroid-caption">just a little something.</p>
+    </div>
+
+    <p class="tap-hint" id="hint">touch the photograph</p>
+
+    <div class="message-box">
+      <p class="message" id="message"></p>
+    </div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="finale" id="finale">
+      <div class="divider"></div>
+      <div class="countdown-card">
+        <div class="countdown-label">days since we last saw and held eachother.
+        </div>
+        <div class="countdown-number" id="days">42</div>
+        <div class="countdown-sub">&amp; hopefully, just a little while longer<br>until i'm back in your arms</div>
+      </div>
+
+      <div class="signature">
+        <p class="signature-line">I love you and I miss you.</p>
+        <span class="from">your girl</span>
+      </div>
+
+      <button class="replay" id="replay">read it again</button>
+    </div>
+  </main>
+
+<script>
+(function(){
+  var DAYS_APART = 42; // 6 weeks
+  var lines = [
+    "We were eleven.",
+    "At least I was when I first met you. I found you annoying. No, scratch that— I didn\u2019t care much about your existence.",
+    "You were a friend of a friend, and then a friend. We didn\u2019t talk much, but enough for me to remember you.",
+    "Then one day, you were in my new friend\u2019s room. Well, technically you were his roommate, but still.",
+    "It felt like fate.",
+    "A familiar face in an unfamiliar place, even though I hadn\u2019t seen you in almost four years.",
+    "I liked you in first year. You gave me a place to nap. And then you gave me a rock.",
+    "I don\u2019t know why I kept it. My friends told me it was stupid, that it was just a rock.",
+    "Maybe it was.",
+    "Or maybe some part of me knew. Maybe I knew that one day I wouldn\u2019t regret keeping it. Maybe I knew that someday you would mean more to me than you did in that moment.",
+    "I love you, no— ",
+    "I\u2019m in love with you, my love, and I hope I never get out of it.",
+    "Because just like that small, insignificant rock, you\u2019ve become one of the most precious things I\u2019ve ever chosen to keep."
+  ];
+  var rock = document.getElementById('rock');
+  var hint = document.getElementById('hint');
+  var messageEl = document.getElementById('message');
+  var progressEl = document.getElementById('progress');
+  var finale = document.getElementById('finale');
+  var daysEl = document.getElementById('days');
+  var replayBtn = document.getElementById('replay');
+  var motesEl = document.getElementById('motes');
+
+  daysEl.textContent = DAYS_APART;
+
+  lines.forEach(function(_, idx){
+    var d = document.createElement('div');
+    d.className = 'dot';
+    d.id = 'dot-' + idx;
+    progressEl.appendChild(d);
+  });
+
+  function spawnMote(){
+    var m = document.createElement('div');
+    m.className = 'mote';
+    var size = Math.random() * 3 + 2;
+    m.style.width = size + 'px';
+    m.style.height = size + 'px';
+    m.style.left = Math.random() * 100 + 'vw';
+    m.style.setProperty('--drift-x', (Math.random() * 60 - 30) + 'px');
+    m.style.animationDuration = (Math.random() * 8 + 10) + 's';
+    motesEl.appendChild(m);
+    setTimeout(function(){ m.remove(); }, 19000);
+  }
+  for(var k=0;k<6;k++){ setTimeout(spawnMote, k * 900); }
+  setInterval(spawnMote, 1400);
+
+  var step = 0;
+  var typing = false;
+  var typeTimer = null;
+
+  function stripTags(html){
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  function typeLine(html, plain){
+    typing = true;
+    messageEl.innerHTML = '';
+    messageEl.classList.add('visible');
+    var i = 0;
+    clearInterval(typeTimer);
+    typeTimer = setInterval(function(){
+      i++;
+      messageEl.textContent = plain.slice(0, i);
+      if(i >= plain.length){
+        clearInterval(typeTimer);
+        messageEl.innerHTML = html;
+        typing = false;
+      }
+    }, 20);
+  }
+
+  function advance(){
+    if(typing) return;
+    if(step >= lines.length) return;
+
+    hint.classList.add('hidden');
+
+    rock.classList.remove('turn-1','turn-2','turn-3','turn-4');
+    rock.classList.add('turn-' + ((step % 4) + 1));
+
+    var raw = lines[step];
+    typeLine(raw, stripTags(raw));
+
+    var dot = document.getElementById('dot-' + step);
+    if(dot) dot.classList.add('done');
+
+    step++;
+
+    if(step >= lines.length){
+      setTimeout(function(){
+        finale.classList.add('visible');
+      }, 1600);
+    }
+  }
+
+  function reset(){
+    step = 0;
+    clearInterval(typeTimer);
+    typing = false;
+    messageEl.classList.remove('visible');
+    messageEl.innerHTML = '';
+    hint.classList.remove('hidden');
+    finale.classList.remove('visible');
+    rock.classList.remove('turn-1','turn-2','turn-3','turn-4');
+    document.querySelectorAll('.dot').forEach(function(d){ d.classList.remove('done'); });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  rock.addEventListener('click', advance);
+  rock.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      advance();
+    }
+  });
+
+  replayBtn.addEventListener('click', reset);
+})();
+</script>
+
+</body>
+</html>
